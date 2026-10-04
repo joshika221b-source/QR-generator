@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Studio — QR Code Generator &amp; Designer</title>
+  <meta name="description" content="Create, customize and download QR codes for links, text, email, phone and Wi-Fi. Runs fully in your browser." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <a href="#" class="brand" aria-label="QR Studio home">
+      <span class="brand-symbol" aria-hidden="true">▦</span>
+      qr<span class="accent">.studio</span>
+    </a>
+    <div class="header-right">
+      <span class="privacy">🔒 Private by design</span>
+      <button id="themeToggle" class="icon-btn" type="button" aria-label="Switch to dark mode">🌙</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <p class="kicker"><span class="kicker-line"></span>QR CODE GENERATOR &amp; DESIGNER</p>
+      <h1>Make it <em>scannable.</em></h1>
+      <p class="sub">Pick a type, fill in the details and watch your QR code update live.</p>
+    </section>
+
+    <div class="grid">
+      <!-- ===== Left column: inputs + customization ===== -->
+      <section class="panel" aria-labelledby="contentHeading">
+        <div class="section-top"><span class="idx">01</span><h2 id="contentHeading">CONTENT</h2><span class="rule"></span></div>
+
+        <!-- Type tabs -->
+        <div class="tabs" role="tablist" aria-label="QR code type">
+          <button role="tab" class="tab is-active" data-type="url" aria-selected="true" id="tab-url">🔗 URL</button>
+          <button role="tab" class="tab" data-type="text" aria-selected="false" tabindex="-1" id="tab-text">📝 Text</button>
+          <button role="tab" class="tab" data-type="email" aria-selected="false" tabindex="-1" id="tab-email">✉️ Email</button>
+          <button role="tab" class="tab" data-type="phone" aria-selected="false" tabindex="-1" id="tab-phone">📞 Phone</button>
+          <button role="tab" class="tab" data-type="wifi" aria-selected="false" tabindex="-1" id="tab-wifi">📶 Wi-Fi</button>
+        </div>
+
+        <!-- Field groups: only the active one is visible -->
+        <div class="fields" data-fields="url">
+          <label class="field">Website URL
+            <input id="url" type="text" placeholder="example.com" autocomplete="url" />
+          </label>
+        </div>
+        <div class="fields" data-fields="text" hidden>
+          <label class="field">Your text
+            <textarea id="text" rows="4" placeholder="Type any message…"></textarea>
+          </label>
+        </div>
+        <div class="fields" data-fields="email" hidden>
+          <label class="field">Email address
+            <input id="email" type="email" placeholder="name@example.com" />
+          </label>
+          <label class="field">Subject <small>OPTIONAL</small>
+            <input id="subject" type="text" placeholder="Hello!" />
+          </label>
+          <label class="field">Message <small>OPTIONAL</small>
+            <textarea id="message" rows="3" placeholder="Write your message…"></textarea>
+          </label>
+        </div>
+        <div class="fields" data-fields="phone" hidden>
+          <label class="field">Phone number
+            <input id="phone" type="tel" placeholder="+91 98765 43210" />
+          </label>
+        </div>
+        <div class="fields" data-fields="wifi" hidden>
+          <label class="field">Network name (SSID)
+            <input id="ssid" type="text" placeholder="MyHomeWiFi" />
+          </label>
+          <label class="field">Password <small>OPTIONAL</small>
+            <input id="password" type="text" placeholder="Wi-Fi password" />
+          </label>
+          <label class="field">Security
+            <select id="security">
+              <option value="WPA">WPA / WPA2</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">None</option>
+            </select>
+          </label>
+        </div>
+
+        <p id="validation" class="validation" role="status" aria-live="polite"></p>
+
+        <!-- Customization -->
+        <div class="section-top mt"><span class="idx">02</span><h2>STYLE</h2><span class="rule"></span></div>
+
+        <label class="field">Size <output id="sizeOut">280px</output>
+          <input id="size" type="range" min="180" max="420" step="10" value="280" />
+        </label>
+
+        <div class="colors">
+          <label class="color-box">Foreground
+            <input id="fg" type="color" value="#182620" />
+          </label>
+          <label class="color-box">Background
+            <input id="bg" type="color" value="#ffffff" />
+          </label>
+        </div>
+
+        <p class="caption">PRESETS</p>
+        <div class="presets">
+          <button type="button" class="preset is-selected" data-preset="classic">Classic</button>
+          <button type="button" class="preset" data-preset="ocean">Ocean</button>
+          <button type="button" class="preset" data-preset="purple">Purple</button>
+          <button type="button" class="preset" data-preset="dark">Dark</button>
+        </div>
+
+        <div class="two">
+          <label class="field">Error correction
+            <select id="ecc">
+              <option value="L">Low (7%)</option>
+              <option value="M" selected>Medium (15%)</option>
+              <option value="Q">Quartile (25%)</option>
+              <option value="H">High (30%)</option>
+            </select>
+          </label>
+          <label class="field">Padding <output id="padOut">4</output>
+            <input id="padding" type="range" min="0" max="8" value="4" />
+          </label>
+        </div>
+      </section>
+
+      <!-- ===== Right column: live preview ===== -->
+      <section class="panel" aria-labelledby="previewHeading">
+        <div class="section-top"><span class="idx">03</span><h2 id="previewHeading">PREVIEW</h2><span class="rule"></span><span class="live">● LIVE</span></div>
+        <div class="paper">
+          <div id="stage" class="stage">
+            <canvas id="qrCanvas" hidden aria-label="Generated QR code" role="img"></canvas>
+            <div id="empty" class="empty">
+              <strong>Your code starts here</strong>
+              <span>Fill in the details on the left to generate a QR code.</span>
+            </div>
+          </div>
+          <p class="info"><span>TYPE</span> <b id="infoType">URL</b></p>
+          <p class="info"><span>CONTENT</span> <b id="infoContent">—</b></p>
+          <p id="contrast" class="contrast" hidden>⚠️ Low contrast may affect QR scanning.</p>
+          <div class="actions">
+            <button id="downloadBtn" class="btn primary" type="button" disabled>Download PNG</button>
+            <button id="copyBtn" class="btn" type="button" disabled>Copy QR</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== Recent codes ===== -->
+    <section class="recent" aria-labelledby="recentHeading">
+      <div class="recent-head">
+        <div class="section-top grow"><span class="idx">04</span><h2 id="recentHeading">RECENT QR CODES</h2><span class="rule"></span></div>
+        <button id="clearBtn" class="btn small" type="button">Clear history</button>
+      </div>
+      <p id="recentEmpty" class="recent-empty">No recent codes yet. Download or copy a QR to save it here.</p>
+      <ul id="recentList" class="recent-list"></ul>
+    </section>
+
+    <footer class="footer">QR STUDIO · Made with HTML, CSS &amp; JavaScript · No data leaves your browser</footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- QR encoder library (local copy), then our app logic -->
+  <script src="qrcode.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
